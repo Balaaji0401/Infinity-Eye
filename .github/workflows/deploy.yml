@@ -1,0 +1,20 @@
+# OPTIONAL alternative to Cloudflare's Git integration. Manual by default so it never races the Cloudflare build.
+# To use it: add repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID, disconnect Cloudflare's Git
+# integration, then run this workflow from the Actions tab (or add a `push: branches: [main]` trigger below).
+name: Deploy to Cloudflare (manual)
+on:
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: npm test
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy

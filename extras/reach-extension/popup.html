@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+body{font:14px system-ui;width:340px;margin:0;padding:14px;background:#121216;color:#f4f3f1}
+h1{font-size:16px;margin:0 0 10px}label{display:block;font-size:12px;color:#a4a3ab;margin-top:10px}
+input,select{width:100%;box-sizing:border-box;margin-top:4px;padding:7px 9px;border-radius:7px;border:1px solid #2e2e36;background:#1b1b20;color:inherit}
+button{margin-top:12px;width:100%;padding:9px;border:0;border-radius:999px;background:#f5b53f;color:#221703;font-weight:700;cursor:pointer}
+button.ghost{background:#25252c;color:#f4f3f1}.msg{margin-top:10px;font-size:13px;color:#a4a3ab;min-height:18px}.err{color:#ff7a70}
+details{margin-top:10px;font-size:12px;color:#a4a3ab}
+</style></head><body>
+<h1>∞ Eye Reach</h1>
+<label>Mandate<select id="mandate"><option value="">Loading…</option></select></label>
+<button id="sendSel">Send selected text</button>
+<button id="sendPage" class="ghost">Send whole page</button>
+<div class="msg" id="msg"></div>
+<details><summary>Settings</summary>
+<label>∞ Eye URL<input id="url" placeholder="https://infinity-eye.xxx.workers.dev"></label>
+<label>API token (copy from Sourcing → Reach)<input id="token" placeholder="paste token"></label>
+<button id="save" class="ghost">Save settings</button>
+</details>
+<script src="popup.js"></script></body></html>

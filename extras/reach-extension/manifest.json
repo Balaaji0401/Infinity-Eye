@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "∞ Eye Reach",
+  "version": "1.0.0",
+  "description": "Send the recruiter search-results page you are viewing (Resdex, LinkedIn, any job board) to ∞ Eye for scoring.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "action": { "default_popup": "popup.html", "default_title": "Send this page to ∞ Eye" },
+  "icons": {}
+}

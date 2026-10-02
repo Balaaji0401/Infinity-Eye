@@ -1,0 +1,65 @@
+name = "infinity-eye"
+main = "src/index.js"
+compatibility_date = "2026-09-25"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+preview_urls = true
+
+# React app is served from the same Worker
+# Runs before every `wrangler deploy` (Git build or manual), so the web app is always built, whatever the
+# dashboard's "Build command" says. Idempotent: skipped when web/dist is already current.
+[build]
+command = "npm run build"
+
+[assets]
+directory = "./web/dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+# These paths always run the Worker. Everything else is served straight from web/dist (the React app, with
+# client-side routing). Without this, a candidate opening their reply link would get the app's login page.
+run_worker_first = ["/api/*", "/r/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "infinity-eye-db"
+database_id = "a62a3b1b-1ec1-40dd-ba56-62cf84172e96"
+migrations_dir = "./migrations"
+
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "infinity-eye-resumes"
+
+[ai]
+binding = "AI"
+
+# Background verification sweep. Five minutes conserves Free-plan requests and D1 reads.
+[triggers]
+crons = ["*/5 * * * *"]
+
+[vars]
+APP_USER = "admin"
+# Sign-ins as "user:password" pairs. Move to a secret (`wrangler secret put APP_USERS`) before going live.
+APP_USERS = "admin:admin,tester:tester,guest:guest"
+APP_DISPLAY_NAME = "Praveen"
+RECRUITER_NAME = "Praveen, Neurosaur"
+COMPANY_NAME = "Neurosaur"
+# Public address of this app, used in reply links sent to candidates (e.g. https://infinity-eye.xxx.workers.dev)
+PUBLIC_URL = ""
+# Optional secrets for automatic sending: RESEND_API_KEY (+ MAIL_FROM, MAIL_REPLY_TO vars), WHATSAPP_TOKEN, WHATSAPP_PHONE_ID
+# AI providers. Chat: CodeCraft (OpenAI-compatible, 1M free tokens/month) when the CODECRAFT_API_KEY secret is set,
+# otherwise Workers AI. Embeddings: Workers AI by default (cheap, no extra account).
+LLM_PROVIDER = "codecraft"                 # codecraft | workers-ai
+LLM_BASE_URL = "https://codecraftapi.com/v1"
+LLM_MODEL = "deepseek-v4-flash-0731"       # any CodeCraft model id; cheap and good at JSON
+WORKERS_AI_MODEL = "@cf/meta/llama-3.1-8b-instruct-fp8-fast"
+EMBED_PROVIDER = "workers-ai"              # workers-ai | codecraft
+WORKERS_EMBED_MODEL = "@cf/baai/bge-base-en-v1.5"
+EMBED_MODEL = "text-embedding-3-small"     # used only when EMBED_PROVIDER = codecraft
+# SEARCH_PROVIDER = "serper,exa"           # default: whichever of SERPER_API_KEY / EXA_API_KEY secrets exist
+DEEP_TOP_N = "15"
+POOL_MIN_SCORE = "5"
+RECRUITER_HOURLY_COST = "500"
+MANUAL_MINUTES_PER_RESUME = "6"
+# Optional secrets: APP_PASSWORD overrides the initial "admin" password.
+# SECRET_KEY overrides the automatically generated D1-backed signing key.
+# CODECRAFT_API_KEY enables CodeCraft chat models. SERPER_API_KEY, EXA_API_KEY and GITHUB_TOKEN enable optional sourcing integrations.
